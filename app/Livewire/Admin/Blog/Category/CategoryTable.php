@@ -22,10 +22,28 @@ class CategoryTable extends Component
         return view('livewire.admin.blog.category.category-table');
     }
 
-    #[On('category-created')]
+    #[On(['category-created', 'category-updated'])]
     public function updateCategoryList()
     {
         // refresh the list of categories
         $this->categories = Category::all()->sortByDesc('created_at');
+    }
+
+    public function editCategory($id)
+    {
+        $category = Category::find($id);
+        $this->dispatch('edit-category', $category);
+    }
+
+    public function deleteCategory($id)
+    {
+        $category = Category::find($id);
+        try {
+            $category->delete();
+            $this->updateCategoryList();
+            $this->dispatch('category-deleted');
+        } catch (\Exception $e) {
+            $this->dispatch('error', $e->getMessage());
+        }
     }
 }

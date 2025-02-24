@@ -11,6 +11,7 @@
     <title>Dashboard - Analytics | Sneat - Bootstrap 5 HTML Admin Template - Pro</title>
 
     <meta name="description" content="" />
+    @include('sweetalert::alert', ['cdn' => "https://cdn.jsdeliv    r.net/npm/sweetalert2@9"])
     @livewireStyles
     @include('admin.layouts.includes.head-meta')
 </head>
@@ -54,7 +55,6 @@
         <div class="layout-overlay layout-menu-toggle"></div>
     </div>
     <!-- / Layout wrapper -->
-
     @livewireScripts
     @include('admin.layouts.includes.scripts')
 

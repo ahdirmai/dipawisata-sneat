@@ -18,10 +18,12 @@
                         <i class="bx bx-dots-vertical-rounded"></i>
                     </button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit-alt me-1"></i>
-                            Edit</a>
-                        <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i>
-                            Delete</a>
+                        <button class="dropdown-item" wire:click="editCategory({{ $category->id }})"><i
+                                class="bx bx-edit-alt me-1"></i>
+                            Edit</button>
+                        <button class="dropdown-item" wire:click="deleteCategory({{ $category->id }})"
+                            wire:confirm="Hapus Kategori ini?"><i class="bx bx-trash me-1"></i>
+                            Delete</button>
                     </div>
                 </div>
             </td>
