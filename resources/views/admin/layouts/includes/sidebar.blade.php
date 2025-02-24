@@ -57,11 +57,33 @@
 
     <ul class="menu-inner py-1">
         <!-- Dashboard -->
-        <li class="menu-item {{ request()->routeIs('admin.dashboard.*') ? 'active' : '' }}">
+        <li class="menu-item {{ request()->routeIs('admin.dashboard.*') ? 'active ' : '' }}">
             <a href="{{ route('admin.dashboard.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Dashboard</div>
             </a>
         </li>
+
+        <li class="menu-item {{ request()->routeIs('admin.blog.*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="Layouts">Blogs</div>
+            </a>
+
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="layouts-without-menu.html" class="menu-link">
+                        <div data-i18n="Without menu">Post</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->routeIs('admin.blog.category.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.blog.category.index') }}" class="menu-link">
+                        <div data-i18n="Without navbar">Kategori</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
     </ul>
+
+
 </aside>

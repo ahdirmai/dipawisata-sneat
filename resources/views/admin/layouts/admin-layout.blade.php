@@ -11,6 +11,7 @@
     <title>Dashboard - Analytics | Sneat - Bootstrap 5 HTML Admin Template - Pro</title>
 
     <meta name="description" content="" />
+    @livewireStyles
     @include('admin.layouts.includes.head-meta')
 </head>
 
@@ -54,8 +55,9 @@
     </div>
     <!-- / Layout wrapper -->
 
-
+    @livewireScripts
     @include('admin.layouts.includes.scripts')
+
 </body>
 
 </html>

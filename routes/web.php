@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\Blog\CategoryController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\Dashboard\DashboardController as UserDashboardController;
@@ -20,6 +21,14 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
+
+        // blog routes
+        route::prefix('blog')->name('blog.')->group(function () {
+            Route::prefix('category')->name('category.')->group(function () {
+                Route::get('/', [CategoryController::class, 'index'])->name('index');
+            });
+        });
     });
 
 
