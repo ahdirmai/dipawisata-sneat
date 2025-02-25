@@ -24,7 +24,7 @@ class CategoryForm extends Component
     public function save()
     {
         $this->validate([
-            'name' => 'required',
+            'name' => 'required|unique:blog_categories,name',
         ]);
 
         DB::beginTransaction();
@@ -46,7 +46,7 @@ class CategoryForm extends Component
     public function update($id)
     {
         $this->validate([
-            'name' => 'required',
+            'name' => 'required|unique:blog_categories,name,' . $id,
         ]);
 
         DB::beginTransaction();
