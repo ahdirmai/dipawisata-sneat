@@ -11,9 +11,15 @@
         </div>
         @endif
 
+        {{-- error session --}}
+        @if (session('error'))
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            {{ session('error') }}
+        </div>
+        @endif
 
-
-
+        {{-- card --}}
 
         <div class="col-lg-12 col-md-12 order-1">
             <div class="row">
@@ -27,7 +33,7 @@
                                 </div>
                             </div>
                             <span class="fw-semibold d-block mb-1">Total Views</span>
-                            <h3 class="card-title mb-2">999</h3>
+                            <h3 class="card-title mb-2">{{ $views }}</h3>
                         </div>
                     </div>
                 </div>
@@ -41,7 +47,7 @@
                                 </div>
                             </div>
                             <span class="fw-semibold d-block mb-1">Total Post</span>
-                            <h3 class="card-title mb-2">$12,628</h3>
+                            <h3 class="card-title mb-2">{{ $total_post }}</h3>
 
                         </div>
                     </div>
@@ -57,7 +63,7 @@
 
                             </div>
                             <span class="fw-semibold d-block mb-1">Published</span>
-                            <h3 class="card-title mb-2">$12,628</h3>
+                            <h3 class="card-title mb-2">{{ $published }}</h3>
 
                         </div>
                     </div>
@@ -72,7 +78,7 @@
                                 </div>
                             </div>
                             <span class="fw-semibold d-block mb-1">Draft</span>
-                            <h3 class="card-title mb-2">$12,628</h3>
+                            <h3 class="card-title mb-2">{{ $drafts }}</h3>
 
                         </div>
                     </div>
@@ -92,7 +98,7 @@
                     <div class="row g-0 align-items-center">
                         <div class="col-md-3 d-flex align-items-center justify-content-center">
                             <img class="card-img card-img-left img-fluid"
-                                src="{{ asset('assets/img/elements/12.jpg') }}" alt="Card image"
+                                src="{{ $post->getFirstMediaUrl('thumbnails', 'thumbnail') }}" alt="Card image"
                                 style="width: 100%; height: auto;" />
                         </div>
                         <div class="col-md-9">
@@ -122,22 +128,39 @@
                                         </div>
                                     </div>
                                     {{-- publish toggle --}}
-                                    <div class="form-check form-switch mb-2">
-                                        <input class="form-check-input" type="checkbox" id="publishToggle" {{
-                                            $post->status == 'published' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="publishToggle">Publish</label>
-                                    </div>
+                                    <form action="{{ route('admin.blog.post.togglePublish', $post) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="publishToggle{{ $post->id }}" {{ $post->status == 'published' ?
+                                            'checked' : '' }}
+                                            onchange="this.form.submit()">
+                                            <label class="form-check-label"
+                                                for="publishToggle{{ $post->id }}">Publish</label>
+                                        </div>
+                                    </form>
                                 </div>
                                 {{-- edit button on end --}}
                                 <div class="text-end mt-3">
-                                    <a href="" class="btn btn-primary">Edit</a>
+                                    <a href="{{ route('admin.blog.post.edit',$post) }}" class="btn btn-primary">Edit</a>
+                                    {{-- delete button --}}
+                                    <form action="{{ route('admin.blog.post.destroy',$post) }}" method="POST"
+                                        class="d-inline"
+                                        onsubmit="return confirm('Are you sure you want to delete this post?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 @empty
-
+                <div class="alert alert-info text-center">
+                    No post found
+                </div>
                 @endforelse
 
 
