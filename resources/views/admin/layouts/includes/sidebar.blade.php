@@ -71,6 +71,12 @@
             </a>
 
             <ul class="menu-sub">
+                <li class="menu-item {{ request()->routeIs('admin.product.product-categories.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.product.product-categories.index') }}" class="menu-link">
+                        <div data-i18n="Without menu">Kategori</div>
+                    </a>
+                </li>
+
                 <li class="menu-item {{ request()->routeIs('admin.product.city-categories.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.product.city-categories.index') }}" class="menu-link">
                         <div data-i18n="Without menu">Kategori Kota</div>

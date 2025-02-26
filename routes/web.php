@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\Blog\CategoryController;
 use App\Http\Controllers\Admin\Blog\PostController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Product\CityCategoryController;
+use App\Http\Controllers\Admin\Product\ProductCategoryController;
 use App\Http\Controllers\Admin\TermAndConditionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\Dashboard\DashboardController as UserDashboardController;
@@ -61,6 +62,16 @@ Route::middleware('auth')->group(function () {
                 Route::post('/store', [CityCategoryController::class, 'store'])->name('store');
                 Route::patch('/update/{cityCategory}', [CityCategoryController::class, 'update'])->name('update');
                 Route::delete('/destroy/{cityCategory}', [CityCategoryController::class, 'destroy'])->name('destroy');
+            });
+
+            Route::prefix('product-categories')->name('product-categories.')->group(function () {
+                Route::get('/', [ProductCategoryController::class, 'index'])->name('index');
+                Route::post('/store', [ProductCategoryController::class, 'store'])->name('store');
+                Route::patch('/update/{productCategory}', [ProductCategoryController::class, 'update'])->name('update');
+                Route::delete('/destroy/{productCategory}', [ProductCategoryController::class, 'destroy'])->name('destroy');
+
+                // publish and unpublish
+                Route::patch('/publish/{productCategory}', [ProductCategoryController::class, 'publish'])->name('togglePublish');
             });
         });
     });
