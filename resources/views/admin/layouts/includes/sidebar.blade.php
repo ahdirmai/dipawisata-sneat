@@ -64,6 +64,22 @@
             </a>
         </li>
 
+        <li class="menu-item {{ request()->routeIs('admin.product.*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="Layouts">Products</div>
+            </a>
+
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->routeIs('admin.product.city-categories.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.product.city-categories.index') }}" class="menu-link">
+                        <div data-i18n="Without menu">Kategori Kota</div>
+                    </a>
+                </li>
+
+            </ul>
+        </li>
+
 
         <li class="menu-item {{ request()->routeIs('admin.term-and-condition.*') ? 'active ' : '' }}">
             <a href="{{ route('admin.term-and-condition.index') }}" class="menu-link">

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\Blog\CategoryController;
 use App\Http\Controllers\Admin\Blog\PostController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
+use App\Http\Controllers\Admin\Product\CityCategoryController;
 use App\Http\Controllers\Admin\TermAndConditionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\Dashboard\DashboardController as UserDashboardController;
@@ -52,6 +53,15 @@ Route::middleware('auth')->group(function () {
         Route::prefix('term-and-condition')->name('term-and-condition.')->group(function () {
             Route::get('/', [TermAndConditionController::class, 'index'])->name('index');
             Route::post('/store', [TermAndConditionController::class, 'store'])->name('store');
+        });
+
+        Route::prefix('product')->name('product.')->group(function () {
+            Route::prefix('city-categories')->name('city-categories.')->group(function () {
+                Route::get('/', [CityCategoryController::class, 'index'])->name('index');
+                Route::post('/store', [CityCategoryController::class, 'store'])->name('store');
+                Route::patch('/update/{cityCategory}', [CityCategoryController::class, 'update'])->name('update');
+                Route::delete('/destroy/{cityCategory}', [CityCategoryController::class, 'destroy'])->name('destroy');
+            });
         });
     });
 
