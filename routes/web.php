@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\Blog\CategoryController;
 use App\Http\Controllers\Admin\Blog\PostController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
+use App\Http\Controllers\Admin\TermAndConditionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\Dashboard\DashboardController as UserDashboardController;
 use App\Livewire\Admin\Blog\Post\FormPost;
@@ -45,6 +46,12 @@ Route::middleware('auth')->group(function () {
 
                 Route::Patch('/publish/{post}', [PostController::class, 'publish'])->name('togglePublish');
             });
+            // term and condition credits
+
+        });
+        Route::prefix('term-and-condition')->name('term-and-condition.')->group(function () {
+            Route::get('/', [TermAndConditionController::class, 'index'])->name('index');
+            Route::post('/store', [TermAndConditionController::class, 'store'])->name('store');
         });
     });
 

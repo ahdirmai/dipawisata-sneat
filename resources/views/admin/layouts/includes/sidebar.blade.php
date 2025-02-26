@@ -64,6 +64,14 @@
             </a>
         </li>
 
+
+        <li class="menu-item {{ request()->routeIs('admin.term-and-condition.*') ? 'active ' : '' }}">
+            <a href="{{ route('admin.term-and-condition.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div data-i18n="Analytics">Syarat Dan Ketentuan Kredit</div>
+            </a>
+        </li>
+
         <li class="menu-item {{ request()->routeIs('admin.blog.*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
