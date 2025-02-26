@@ -21,45 +21,8 @@
             {{ session('error') }}
         </div>
         @endif
-        <div class="card">
-            <div class="card-body">
-                <form id="city-category-form" action="{{ route('admin.product.city-categories.store') }}" method="POST"
-                    enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" id="form-method" name="_method" value="POST">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
-                        <input type="text" id="name" name="name"
-                            class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}">
-                        @error('name')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="mb-3">
-                        <label for="icon" class="form-label">Icon</label>
-                        <input type="file" id="icon" name="icon"
-                            class="form-control @error('icon') is-invalid @enderror" onchange="previewImage(event)">
-                        @error('icon')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                        <img id="icon-preview" src="#" alt="Icon Preview" style="display:none; margin-top: 10px;"
-                            width="100">
-                        <script>
-                            function previewImage(event) {
-                                const reader = new FileReader();
-                                reader.onload = function(){
-                                    const output = document.getElementById('icon-preview');
-                                    output.src = reader.result;
-                                    output.style.display = 'block';
-                                };
-                                reader.readAsDataURL(event.target.files[0]);
-                            }
-                        </script>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
-        </div>
+
+        <button class="btn btn-primary mb-4" id="createCityCategoryBtn">Create City Category</button>
 
         @foreach($cityCategories as $cityCategory)
         <div class="card mt-4">
@@ -71,11 +34,12 @@
                         <h5 class="mb-0">{{ $cityCategory->name }}</h5>
                     </div>
                     <div>
-                        <button class="btn btn-sm btn-warning me-2"
-                            onclick="editCityCategory({{ $cityCategory->id }}, '{{ $cityCategory->name }}', '{{ $cityCategory->getFirstMediaUrl('icon') }}')">
+                        <button class="btn btn-sm btn-warning me-2 editCityCategoryBtn"
+                            data-id="{{ $cityCategory->id }}" data-name="{{ $cityCategory->name }}"
+                            data-icon="{{ $cityCategory->getFirstMediaUrl('icon') }}">
                             <i class="tf-icons bx bx-pencil"></i>
                         </button>
-                        <button class="btn btn-sm btn-danger" onclick="confirmDelete({{ $cityCategory->id }})">
+                        <button class="btn btn-sm btn-danger deleteCityCategoryBtn" data-id="{{ $cityCategory->id }}">
                             <i class="tf-icons bx bx-trash"></i>
                         </button>
                     </div>
@@ -83,6 +47,45 @@
             </div>
         </div>
         @endforeach
+    </div>
+
+    <!-- Create/Edit Modal -->
+    <div class="modal fade" id="cityCategoryModal" tabindex="-1" aria-labelledby="cityCategoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cityCategoryModalLabel">Create City Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="city-category-form" action="{{ route('admin.product.city-categories.store') }}"
+                        method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" id="form-method" name="_method" value="POST">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" id="name" name="name"
+                                class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}">
+                            @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="icon" class="form-label">Icon</label>
+                            <input type="file" id="icon" name="icon"
+                                class="form-control @error('icon') is-invalid @enderror" onchange="previewImage(event)">
+                            @error('icon')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <img id="icon-preview" src="#" alt="Icon Preview" style="display:none; margin-top: 10px;"
+                                width="100">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Delete Confirmation Modal -->
@@ -110,22 +113,57 @@
 
     @push('after-scripts')
     <script>
-        function editCityCategory(id, name, iconUrl) {
+        document.getElementById('createCityCategoryBtn').addEventListener('click', function() {
             const form = document.getElementById('city-category-form');
-            form.action = `/admin/product/city-categories/update/${id}`;
-            document.getElementById('form-method').value = 'PATCH';
-            document.getElementById('name').value = name;
+            form.action = '{{ route('admin.product.city-categories.store') }}';
+            document.getElementById('form-method').value = 'POST';
+            document.getElementById('name').value = '';
+            document.getElementById('icon').value = '';
+            document.getElementById('icon-preview').style.display = 'none';
+            document.getElementById('cityCategoryModalLabel').innerText = 'Create City Category';
+            const modal = new bootstrap.Modal(document.getElementById('cityCategoryModal'));
+            modal.show();
+        });
 
-            const iconPreview = document.getElementById('icon-preview');
-            iconPreview.src = iconUrl;
-            iconPreview.style.display = 'block';
-        }
+        document.querySelectorAll('.editCityCategoryBtn').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const name = this.getAttribute('data-name');
+                const iconUrl = this.getAttribute('data-icon');
 
-        function confirmDelete(id) {
-            const deleteForm = document.getElementById('delete-form');
-            deleteForm.action = `/admin/product/city-categories/destroy/${id}`;
-            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-            deleteModal.show();
+                const form = document.getElementById('city-category-form');
+                form.action = `/admin/product/city-categories/update/${id}`;
+                document.getElementById('form-method').value = 'PATCH';
+                document.getElementById('name').value = name;
+
+                const iconPreview = document.getElementById('icon-preview');
+                iconPreview.src = iconUrl;
+                iconPreview.style.display = 'block';
+
+                document.getElementById('cityCategoryModalLabel').innerText = 'Edit City Category';
+                const modal = new bootstrap.Modal(document.getElementById('cityCategoryModal'));
+                modal.show();
+            });
+        });
+
+        document.querySelectorAll('.deleteCityCategoryBtn').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const deleteForm = document.getElementById('delete-form');
+                deleteForm.action = `/admin/product/city-categories/destroy/${id}`;
+                const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                deleteModal.show();
+            });
+        });
+
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function(){
+                const output = document.getElementById('icon-preview');
+                output.src = reader.result;
+                output.style.display = 'block';
+            };
+            reader.readAsDataURL(event.target.files[0]);
         }
     </script>
     @endpush

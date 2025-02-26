@@ -77,6 +77,12 @@
                     </a>
                 </li>
 
+                <li class="menu-item {{ request()->routeIs('admin.product.description-iternary.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.product.description-iternary.index') }}" class="menu-link">
+                        <div data-i18n="Without menu">Deskripsi & Iternari</div>
+                    </a>
+                </li>
+
                 <li class="menu-item {{ request()->routeIs('admin.product.city-categories.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.product.city-categories.index') }}" class="menu-link">
                         <div data-i18n="Without menu">Kategori Kota</div>

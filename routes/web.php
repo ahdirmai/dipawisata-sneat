@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\Blog\CategoryController;
 use App\Http\Controllers\Admin\Blog\PostController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Product\CityCategoryController;
+use App\Http\Controllers\Admin\Product\IternaryDescriotionController;
 use App\Http\Controllers\Admin\Product\ProductCategoryController;
 use App\Http\Controllers\Admin\TermAndConditionController;
 use App\Http\Controllers\ProfileController;
@@ -72,6 +73,13 @@ Route::middleware('auth')->group(function () {
 
                 // publish and unpublish
                 Route::patch('/publish/{productCategory}', [ProductCategoryController::class, 'publish'])->name('togglePublish');
+            });
+
+            Route::prefix('description-iternary')->name('description-iternary.')->group(function () {
+                Route::get('/', [IternaryDescriotionController::class, 'index'])->name('index');
+                Route::post('/store', [IternaryDescriotionController::class, 'store'])->name('store');
+                Route::patch('/update/{iternaryDescription}', [IternaryDescriotionController::class, 'update'])->name('update');
+                Route::delete('/destroy/{iternaryDescription}', [IternaryDescriotionController::class, 'destroy'])->name('destroy');
             });
         });
     });

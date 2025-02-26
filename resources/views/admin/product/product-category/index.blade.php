@@ -21,45 +21,9 @@
             {{ session('error') }}
         </div>
         @endif
-        <div class="card">
-            <div class="card-body">
-                <form id="product-category-form" action="{{ route('admin.product.product-categories.store') }}"
-                    method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" id="form-method" name="_method" value="POST">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
-                        <input type="text" id="name" name="name"
-                            class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}">
-                        @error('name')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="mb-3">
-                        <label for="icon" class="form-label">Icon</label>
-                        <input type="file" id="icon" name="icon"
-                            class="form-control @error('icon') is-invalid @enderror" onchange="previewImage(event)">
-                        @error('icon')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                        <img id="icon-preview" src="#" alt="Icon Preview" style="display:none; margin-top: 10px;"
-                            width="100">
-                        <script>
-                            function previewImage(event) {
-                                const reader = new FileReader();
-                                reader.onload = function(){
-                                    const output = document.getElementById('icon-preview');
-                                    output.src = reader.result;
-                                    output.style.display = 'block';
-                                };
-                                reader.readAsDataURL(event.target.files[0]);
-                            }
-                        </script>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
-        </div>
+
+        <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#productCategoryModal">Add Product
+            Category</button>
 
         @foreach($productCategories as $productCategory)
         <div class="card mt-4">
@@ -86,11 +50,13 @@
                             </div>
                         </form>
 
-                        <button class="btn btn-sm btn-warning me-2"
-                            onclick="editProductCategory({{ $productCategory->id }}, '{{ $productCategory->name }}', '{{ $productCategory->getFirstMediaUrl('icon') }}')">
+                        <button class="btn btn-sm btn-warning me-2 edit-button" data-id="{{ $productCategory->id }}"
+                            data-name="{{ $productCategory->name }}"
+                            data-icon="{{ $productCategory->getFirstMediaUrl('icon') }}" data-bs-toggle="modal"
+                            data-bs-target="#productCategoryModal">
                             <i class="tf-icons bx bx-pencil"></i>
                         </button>
-                        <button class="btn btn-sm btn-danger" onclick="confirmDelete({{ $productCategory->id }})">
+                        <button class="btn btn-sm btn-danger delete-button" data-id="{{ $productCategory->id }}">
                             <i class="tf-icons bx bx-trash"></i>
                         </button>
                     </div>
@@ -98,6 +64,45 @@
             </div>
         </div>
         @endforeach
+    </div>
+
+    <!-- Product Category Modal -->
+    <div class="modal fade" id="productCategoryModal" tabindex="-1" aria-labelledby="productCategoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productCategoryModalLabel">Add Product Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="product-category-form" action="{{ route('admin.product.product-categories.store') }}"
+                        method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" id="form-method" name="_method" value="POST">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" id="name" name="name"
+                                class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}">
+                            @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="icon" class="form-label">Icon</label>
+                            <input type="file" id="icon" name="icon"
+                                class="form-control @error('icon') is-invalid @enderror" onchange="previewImage(event)">
+                            @error('icon')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <img id="icon-preview" src="#" alt="Icon Preview" style="display:none; margin-top: 10px;"
+                                width="100">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Delete Confirmation Modal -->
@@ -125,23 +130,58 @@
 
     @push('after-scripts')
     <script>
-        function editProductCategory(id, name, iconUrl) {
-            const form = document.getElementById('product-category-form');
-            form.action = `/admin/product/product-categories/update/${id}`;
-            document.getElementById('form-method').value = 'PATCH';
-            document.getElementById('name').value = name;
-
+        document.addEventListener('DOMContentLoaded', function () {
+            const productCategoryForm = document.getElementById('product-category-form');
+            const productCategoryModal = document.getElementById('productCategoryModal');
+            const productCategoryModalLabel = document.getElementById('productCategoryModalLabel');
+            const formMethod = document.getElementById('form-method');
+            const nameInput = document.getElementById('name');
+            const iconInput = document.getElementById('icon');
             const iconPreview = document.getElementById('icon-preview');
-            iconPreview.src = iconUrl;
-            iconPreview.style.display = 'block';
-        }
 
-        function confirmDelete(id) {
-            const form = document.getElementById('delete-form');
-            form.action = `/admin/product/product-categories/destroy/${id}`;
-            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-            deleteModal.show();
-        }
+            productCategoryModal.addEventListener('hidden.bs.modal', function () {
+                productCategoryForm.action = '{{ route('admin.product.product-categories.store') }}';
+                formMethod.value = 'POST';
+                nameInput.value = '';
+                iconInput.value = '';
+                iconPreview.style.display = 'none';
+                productCategoryModalLabel.textContent = 'Add Product Category';
+            });
+
+            document.querySelectorAll('.edit-button').forEach(button => {
+                button.addEventListener('click', function () {
+                    const id = this.getAttribute('data-id');
+                    const name = this.getAttribute('data-name');
+                    const iconUrl = this.getAttribute('data-icon');
+
+                    productCategoryForm.action = `/admin/product/product-categories/update/${id}`;
+                    formMethod.value = 'PATCH';
+                    nameInput.value = name;
+                    iconPreview.src = iconUrl;
+                    iconPreview.style.display = 'block';
+                    productCategoryModalLabel.textContent = 'Edit Product Category';
+                });
+            });
+
+            document.querySelectorAll('.delete-button').forEach(button => {
+                button.addEventListener('click', function () {
+                    const id = this.getAttribute('data-id');
+                    const form = document.getElementById('delete-form');
+                    form.action = `/admin/product/product-categories/destroy/${id}`;
+                    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                    deleteModal.show();
+                });
+            });
+
+            window.previewImage = function (event) {
+                const reader = new FileReader();
+                reader.onload = function () {
+                    iconPreview.src = reader.result;
+                    iconPreview.style.display = 'block';
+                };
+                reader.readAsDataURL(event.target.files[0]);
+            };
+        });
     </script>
     @endpush
 
