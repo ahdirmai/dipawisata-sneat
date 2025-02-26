@@ -1,5 +1,5 @@
 <div>
-    <h5 class="card-header">{{ $method == 'create' ? "Create" : 'Update' }} Kategori</h5>
+    <h5 class="card-header">{{ $method == 'create' ? "Buat" : 'Ubah' }} Kategori</h5>
     <div class="row">
         <div class="col-xl">
             <div class="card-body">

@@ -1,7 +1,7 @@
 <table class="table">
     <thead>
         <tr>
-            <th>No</th>
+            <th class="text-center" style="width: 5%">No</th>
             <th>Name</th>
             <th>Action</th>
         </tr>
@@ -9,7 +9,7 @@
     <tbody class="table-border-bottom-0">
         @forelse($categories as $category)
         <tr>
-            <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{$loop->iteration}}</strong>
+            <td class="text-center">{{$loop->iteration}}
             </td>
             <td>{{ ucfirst($category->name) }}</td>
             <td>

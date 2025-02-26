@@ -10,7 +10,7 @@
 
 
         <div class="card">
-            <h5 class="card-header">Categories Data</h5>
+            <h5 class="card-header">Data Kategori</h5>
             <div class="table-responsive text-nowrap">
                 @livewire('admin.blog.category.category-table', ['categories' => $categories])
             </div>
@@ -31,7 +31,7 @@
         showCancelButton: false,
         showConfirmButton: false,
         timer: 1500
-        
+
         });
 
         });

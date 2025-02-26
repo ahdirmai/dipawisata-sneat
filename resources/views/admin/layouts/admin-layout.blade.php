@@ -11,7 +11,7 @@
     <title>Dashboard - Analytics | Sneat - Bootstrap 5 HTML Admin Template - Pro</title>
 
     <meta name="description" content="" />
-    @include('sweetalert::alert', ['cdn' => "https://cdn.jsdeliv    r.net/npm/sweetalert2@9"])
+    @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"])
     @livewireStyles
     @include('admin.layouts.includes.head-meta')
 </head>
